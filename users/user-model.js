@@ -12,9 +12,8 @@ const getById = id => {
 const authenticate = (username, password) => {
   const user = db("users")
     .where({ username })
-    .select("password")
     .first();
-  return bcrypt.compareSync(password, user.password);
+  return bcrypt.compareSync(password, user.password) ? user : null;
 };
 
 const add = user => {

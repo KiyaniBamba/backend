@@ -7,7 +7,6 @@
     "start": "node index.js",
     "start:dev": "nodemon index.js",
     "migrate": "knex migrate:latest",
-    "heroku-postbuild": "npm run migrate",
     "test": "jest"
   },
   "jest": {

@@ -9,11 +9,12 @@ const getById = id => {
     .first();
 };
 
-const authenticate = (username, password) => {
-  const user = db("users")
+const authenticate = async (username, password) => {
+  const user = await db("users")
     .where({ username })
     .first();
-  return bcrypt.compareSync(password, user.password) ? user : null;
+  const match = bcrypt.compareSync(password, user.password);
+  return match ? user : null;
 };
 
 const add = user => {
@@ -26,8 +27,12 @@ const add = user => {
     .then(([id]) => getById(id));
 };
 
+const getAll = () =>
+  db("users").select("id", "username", "full_name", "email", "city");
+
 module.exports = {
   add,
   getById,
-  authenticate
+  authenticate,
+  getAll
 };

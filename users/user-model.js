@@ -1,37 +1,38 @@
-// const db = require("./db-config.jd");
+const bcrypt = require("bcryptjs");
+const db = require("../database/db");
+const config = require("../config");
+
+const getById = id => {
+  return db("users")
+    .where({ id })
+    .select("id", "username", "email", "city", "full_name")
+    .first();
+};
+
+const authenticate = async (username, password) => {
+  const user = await db("users")
+    .where({ username })
+    .first();
+  const match = bcrypt.compareSync(password, user.password);
+  return match ? user : null;
+};
+
+const add = user => {
+  const salt = bcrypt.genSaltSync(config.round);
+  const hash = bcrypt.hashSync(user.password, salt);
+  user.password = hash;
+
+  return db("users")
+    .insert(user)
+    .then(([id]) => id);
+};
+
+const getAll = () =>
+  db("users").select("id", "username", "full_name", "email", "city");
 
 module.exports = {
-    addUser,
-    find,
-    findBy,
-    findById,
-    findAll
-  };
-  
-  function find() {
-    return db("users").where("id", "username", "password");
-  }
-  
-  function findAll() {
-    return db("users").select("id", "username");
-  }
-  
-  function findBy(filter) {
-    return db("users").where(filter);
-  }
-  
-  function addUser(user) {
-    return db("users")
-      .insert(user, "id")
-      .then(ids => {
-        const [id] = ids;
-        return findById(id);
-      });
-  }
-  
-  function findById(id) {
-    return db("users")
-      .where({ id })
-      .first();
-  }
-  
+  add,
+  getById,
+  authenticate,
+  getAll
+};

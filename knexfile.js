@@ -4,7 +4,7 @@ module.exports = {
   development: {
     client: "sqlite3",
     connection: {
-      filename: "./database/development.db3"
+      filename: "./database/passport.db3"
     },
     useNullAsDefault: true,
     pool: {
@@ -41,7 +41,7 @@ module.exports = {
 
   production: {
     client: "pg",
-    connection: dbURL,
+    connection: dbUrl,
     pool: {
       min: 2,
       max: 10
